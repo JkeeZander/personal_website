@@ -1,0 +1,161 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Altan Dzhumaev</title>
+    <script src="script.js" defer></script>
+    <link href="style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar__container">
+        <a href="#" id="name">ALTAN DZHUMAEV</a>
+        <div class="navbar__mobilemenu">
+          <span class="menu"></span>
+          <span class="menu"></span>
+          <span class="menu"></span>
+        </div>
+        <ul class="navbar__menu">
+          <li class="navbar__items">
+            <a href="#interestsid" class="navbar__links" id="interests"
+              >interests</a
+            >
+          </li>
+          <li class="navbar__items">
+            <a href="#APIid" class="navbar__links" id="API">API stuff</a>
+          </li>
+          <li class="navbar__items">
+            <a href="#" class="navbar__links" id="contacts">contacts</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="about">
+      <div class="about__container">
+        <h1 class="about__topic">ALTAN DZHUMAEV</h1>
+        <p class="about__text">
+          Self-learning software engineering and designing user friendly
+          interfaces through research. Passionate about computer industry and
+          web technologies.
+        </p>
+      </div>
+    </div>
+    <div class="interests" id="interestsid">
+      <div class="interests__container">
+        <div class="interests__info">
+          <h1 class="interests__topic">MY INTERESTS</h1>
+          <p class="interests__text">
+            I was always interested in computers and as a kid digged into the
+            video games' configurations to level up or get prestigious items. My
+            curiousity grew as I learnt more about how computers and internet
+            work and now I am self-learning new technologies. This website is my
+            journey into the world of computer science and software engineering.
+          </p>
+        </div>
+
+        <div class="interests__lists">
+          <ul class="interests__elements">
+            <h2 class="naming">Interests</h2>
+            <li class="interests__items">Front-end Development</li>
+            <li class="interests__items">User friendly design (:</li>
+            <li class="interests__items">Web technologies and protocols</li>
+            <li class="interests__items">Software engineering</li>
+          </ul>
+          <ul class="interests__elements">
+            <h2 class="naming">To learn</h2>
+            <li class="interests__items">Web services</li>
+            <li class="interests__items">Microservices</li>
+            <li class="interests__items">Server side</li>
+            <li class="interests__items">Front end frameworks</li>
+            <li class="interests__items">Web security and protocols</li>
+          </ul>
+          <ul class="interests__elements">
+            <h2 class="naming">Classes taken</h2>
+            <li class="interests__items">Database Systems</li>
+            <li class="interests__items">Operating Systems</li>
+            <li class="interests__items">High level programming languages</li>
+            <li class="interests__items">Data structures and Algorithms</li>
+            <li class="interests__items">
+              Network Architectures and Protocols
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="api" id="APIid">
+      <div class="api__container">
+        <div class="api__weather"></div>
+        <div class="api__registration_form">
+          <form action="/login" method="post">
+            <h1>LOGIN</h1>
+            <label>
+              Username
+              <input type="text" name="username" />
+            </label>
+            <label>
+              Password
+              <input type="password" name="password" />
+            </label>
+            <input type="submit" value="login" />
+          </form>
+          <form action="/register" method="post">
+            <h1>Register</h1>
+            <label>
+              Username
+              <input type="text" name="username" />
+            </label>
+            <label>
+              Password
+              <input type="password" name="password" />
+            </label>
+            <input type="submit" value="register" />
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="contacts">
+      <div class="contacts__container"></div>
+    </div>
+    <footer class="end">
+      <div class="end__container"></div>
+    </footer>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let lat, lon;
+    const api_weather = document.querySelector(".api__weather");
+    const div = document.createElement("div");
+
+    async function serving() {
+      const data = { lat: lat, lon: lon };
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      };
+      const response = await fetch("/api/weathergeo", options);
+      let json = await response.json();
+      let name = json.name;
+      console.log(json);
+      return await json;
+    }
+
+    if ("geolocation" in navigator) {
+      console.log("geolocation available");
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        lat = position.coords.latitude;
+        lon = position.coords.longitude;
+        let apidata = await serving();
+        div.textContent =
+          lat + " " + lon + " " + apidata.name + " " + apidata.weather[0].main;
+        api_weather.appendChild(div);
+      });
+    } else {
+      console.log("geolocation not available");
+    }
+  </script>
+</html>
